@@ -56,24 +56,28 @@ while True:
 
         continue
 
-    stream = openai.ChatCompletion.create(
-        model=MODEL,
-        messages=conversation_history,
-        stream=True,
-    )
+    try:
+        stream = openai.ChatCompletion.create(
+            model=MODEL,
+            messages=conversation_history,
+            stream=True,
+        )
 
-    ai_response = {"role": "system", "content": ""}
+        ai_response = {"role": "system", "content": ""}
 
-    print("\nAI › ", end="")
-    for response in stream:
-        if not hasattr(response.choices[0].delta, "content"):
-            continue
+        print("\nAI › ", end="")
+        for response in stream:
+            if not hasattr(response.choices[0].delta, "content"):
+                continue
 
-        content = response.choices[0].delta.content
-        ai_response["content"] += content
+            content = response.choices[0].delta.content
+            ai_response["content"] += content
 
-        print(content, end="", flush=True)
-        time.sleep(0.03)
+            print(content, end="", flush=True)
+            time.sleep(0.03)
+
+    except Exception as e:
+        print(f"\nSystem › There was an issue querying openai: {e}")
 
     conversation_history.append(ai_response)
     with open(CONVERSATION_HISTORY, "w") as file:
