@@ -78,11 +78,11 @@ while True:
             print(content, end="", flush=True)
             time.sleep(0.03)
 
+        conversation_history.append(ai_response)
+        with open(CONVERSATION_HISTORY, "w") as file:
+            file.write(json.dumps(conversation_history))
+
     except Exception as e:
         print(f"\nSystem › There was an issue querying openai: {e}")
-
-    conversation_history.append(ai_response)
-    with open(CONVERSATION_HISTORY, "w") as file:
-        file.write(json.dumps(conversation_history))
 
     print("")
