@@ -51,7 +51,7 @@ while True:
             size=IMAGE_SIZE
         )
 
-        image_url = response['data'][0]['url']
+        image_url = response["data"][0]["url"]
         print(f"\nImage: {image_url}")
 
         continue
