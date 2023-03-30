@@ -9,21 +9,20 @@ import time
 MODEL = "gpt-3.5-turbo"
 IMAGE_SIZE = "1024x1024"
 
-HISTORY = f"{os.path.expanduser('~')}/.chatgpt_conversation_history"
 
-
-histfile = "~/.ai_queries"
+QUERY_HISTORY = f"{os.path.expanduser('~')}~/.openai_query_history"
 try:
-    readline.read_history_file(histfile)
+    readline.read_history_file(QUERY_HISTORY)
+
 except FileNotFoundError:
     pass
 
 readline.parse_and_bind("tab: complete")
 
-
-if os.path.isfile(HISTORY):
+CONVERSATION_HISTORY = f"{os.path.expanduser('~')}/.openai_conversation_history"
+if os.path.isfile(CONVERSATION_HISTORY):
     try:
-        with open(HISTORY, "r") as file:
+        with open(CONVERSATION_HISTORY, "r") as file:
             conversation_history = json.loads(file.read())
 
     except Exception:
@@ -31,6 +30,7 @@ if os.path.isfile(HISTORY):
 
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
+
 
 while True:
     query = input("\nopenai › ")
@@ -76,7 +76,7 @@ while True:
         time.sleep(0.03)
 
     conversation_history.append(ai_response)
-    with open(HISTORY, "w") as file:
+    with open(CONVERSATION_HISTORY, "w") as file:
         file.write(json.dumps(conversation_history))
 
     print("")
