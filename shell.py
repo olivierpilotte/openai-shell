@@ -39,6 +39,8 @@ while True:
     if len(query) < 1:
         continue
 
+    readline.write_history_file(QUERY_HISTORY)
+
     if query == "flush history":
         conversation_history = []
         continue
