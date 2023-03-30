@@ -10,7 +10,7 @@ MODEL = "gpt-3.5-turbo"
 IMAGE_SIZE = "1024x1024"
 
 
-QUERY_HISTORY = f"{os.path.expanduser('~')}~/.openai_query_history"
+QUERY_HISTORY = f"{os.path.expanduser('~')}/.openai_query_history"
 try:
     readline.read_history_file(QUERY_HISTORY)
 
@@ -33,7 +33,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
 while True:
-    query = input("\nopenai › ")
+    query = input("\nUser › ")
     conversation_history.append({"role": "user", "content": query})
 
     if len(query) < 1:
