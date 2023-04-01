@@ -13,7 +13,7 @@ CONVERSATION_HISTORY_PATH = f"{HOME_DIR}/.openai_conversation_history"
 class Conversation():
 
     def __init__(self):
-        self._converstion_history = []
+        self.conversation_history = []
         if os.path.isfile(CONVERSATION_HISTORY_PATH):
             try:
                 with open(CONVERSATION_HISTORY_PATH, "r") as file:

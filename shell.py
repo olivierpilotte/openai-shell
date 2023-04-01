@@ -39,7 +39,7 @@ def _query_dalle(query):
     print(f"\nImage: {image_url}")
 
 
-def _query_openai(query):
+def _query_openai(query, retries=1):
     conversation.append({"role": "user", "content": query})
 
     try:
@@ -65,7 +65,12 @@ def _query_openai(query):
         conversation.append(ai_response)
 
     except Exception as e:
-        print(f"\nSystem › There was an issue querying openai: {e}")
+        if retries > 0:
+            retries -= 1
+            _query_openai(query, retries=retries)
+
+        else:
+            print(f"\nSystem › There was an issue querying openai: {e}")
 
     print("")
 
