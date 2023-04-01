@@ -1,9 +1,16 @@
 
-import json
+import logging
 import openai
 import os
-import readline
+import sys
 import time
+
+from history import Conversation, Queries
+
+
+logging.basicConfig(
+    stream=sys.stdout, level=logging.INFO,
+    format="%(levelname)s - %(message)s")
 
 
 MODEL = "gpt-3.5-turbo"
@@ -13,26 +20,11 @@ IMAGE_SIZE = "1024x1024"
 BOLD = "\033[1m"
 NORMAL = "\033[0m"
 
+PRINT_DELAY = 0.03
 
-QUERY_HISTORY = f"{os.path.expanduser('~')}/.openai_query_history"
-try:
-    readline.read_history_file(QUERY_HISTORY)
 
-except FileNotFoundError:
-    pass
-
-readline.parse_and_bind("tab: complete")
-
-conversation_history = []
-
-CONVERSATION_HISTORY = f"{os.path.expanduser('~')}/.openai_conversation_history"
-if os.path.isfile(CONVERSATION_HISTORY):
-    try:
-        with open(CONVERSATION_HISTORY, "r") as file:
-            conversation_history = json.loads(file.read())
-
-    except Exception:
-        pass
+conversation = Conversation()
+queries = Queries()
 
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -40,9 +32,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def _query_dalle(query):
     response = openai.Image.create(
-        prompt=query,
-        n=1,
-        size=IMAGE_SIZE
+        prompt=query, n=1, size=IMAGE_SIZE
     )
 
     image_url = response["data"][0]["url"]
@@ -50,14 +40,12 @@ def _query_dalle(query):
 
 
 def _query_openai(query):
-    global conversation_history
-
-    conversation_history.append({"role": "user", "content": query})
+    conversation.append({"role": "user", "content": query})
 
     try:
         stream = openai.ChatCompletion.create(
             model=MODEL,
-            messages=conversation_history,
+            messages=conversation.get(),
             stream=True,
         )
 
@@ -72,11 +60,9 @@ def _query_openai(query):
             ai_response["content"] += content
 
             print(content, end="", flush=True)
-            time.sleep(0.03)
+            time.sleep(PRINT_DELAY)
 
-        conversation_history.append(ai_response)
-        with open(CONVERSATION_HISTORY, "w") as file:
-            file.write(json.dumps(conversation_history))
+        conversation.append(ai_response)
 
     except Exception as e:
         print(f"\nSystem › There was an issue querying openai: {e}")
@@ -85,31 +71,28 @@ def _query_openai(query):
 
 
 def main_loop():
-    global conversation_history
-
     while True:
         try:
             query = input(f"\n{BOLD}User › ")
-
         except EOFError:
             break
 
         if len(query) < 1:
             continue
 
-        readline.write_history_file(QUERY_HISTORY)
+        queries.write()
 
         if query.startswith("image:"):
             _query_dalle(query.replace("image:", ""))
             continue
 
         match query:
-            case "flush history":
-                conversation_history = []
+            case "flush":
+                conversation.flush()
                 continue
 
             case "history":
-                print(json.dumps(conversation_history, indent=2))
+                print(conversation.get())
                 continue
 
             case _:
