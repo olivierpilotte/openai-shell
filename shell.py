@@ -5,28 +5,26 @@ import os
 import sys
 import time
 
-from history import Conversation, Queries
+from history import Conversation
+
+from prompt_toolkit import PromptSession
+from prompt_toolkit.history import FileHistory
+from prompt_toolkit.styles import Style
+
+
+BOLD = Style.from_dict({"": "bold"})
+IMAGE_SIZE = "1024x1024"
+QUERY_HISTORY_PATH = f"{os.path.expanduser('~')}/.openai_query_history"
+OPEN_AI_MODEL = "gpt-3.5-turbo"
+PRINT_DELAY = 0.03
 
 
 logging.basicConfig(
     stream=sys.stdout, level=logging.INFO,
     format="%(levelname)s - %(message)s")
 
-
-MODEL = "gpt-3.5-turbo"
-IMAGE_SIZE = "1024x1024"
-
-
-BOLD = "\033[1m"
-NORMAL = "\033[0m"
-
-PRINT_DELAY = 0.03
-
-
+session = PromptSession(history=FileHistory(QUERY_HISTORY_PATH))
 conversation = Conversation()
-queries = Queries()
-
-
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
@@ -44,14 +42,14 @@ def _query_openai(query, retries=1):
 
     try:
         stream = openai.ChatCompletion.create(
-            model=MODEL,
+            model=OPEN_AI_MODEL,
             messages=conversation.get(),
             stream=True,
         )
 
         ai_response = {"role": "system", "content": ""}
 
-        print(f"\n{NORMAL}AI › ", end="")
+        print("\nAI › ", end="")
         for response in stream:
             if not hasattr(response.choices[0].delta, "content"):
                 continue
@@ -78,14 +76,13 @@ def _query_openai(query, retries=1):
 def main_loop():
     while True:
         try:
-            query = input(f"\n{BOLD}User › ")
+            query = session.prompt("User › ", style=BOLD)
+
         except EOFError:
             break
 
         if len(query) < 1:
             continue
-
-        queries.write()
 
         if query.startswith("image:"):
             _query_dalle(query.replace("image:", ""))

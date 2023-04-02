@@ -2,12 +2,9 @@
 import json
 import os
 import logging
-import readline
 
 
-HOME_DIR = os.path.expanduser('~')
-QUERY_HISTORY_PATH = f"{HOME_DIR}/.openai_query_history"
-CONVERSATION_HISTORY_PATH = f"{HOME_DIR}/.openai_conversation_history"
+CONVERSATION_HISTORY_PATH = f"{os.path.expanduser('~')}/.openai_conversation_history"
 
 
 class Conversation():
@@ -35,18 +32,3 @@ class Conversation():
         self.conversation_history = []
         with open(CONVERSATION_HISTORY_PATH, "w") as file:
             file.write("")
-
-
-class Queries():
-    def __init__(self):
-        readline.parse_and_bind("tab: complete")
-
-        self.query_history = []
-        try:
-            readline.read_history_file(QUERY_HISTORY_PATH)
-
-        except FileNotFoundError:
-            pass
-
-    def write(self):
-        readline.write_history_file(QUERY_HISTORY_PATH)
