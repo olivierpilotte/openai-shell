@@ -45,6 +45,7 @@ def _query_openai(query, retries=1):
             model=OPEN_AI_MODEL,
             messages=conversation.get(),
             stream=True,
+            max_tokens=1024,
         )
 
         ai_response = {"role": "system", "content": ""}
@@ -61,6 +62,8 @@ def _query_openai(query, retries=1):
             time.sleep(PRINT_DELAY)
 
         conversation.append(ai_response)
+
+        print("")
 
     except Exception as e:
         if retries > 0:

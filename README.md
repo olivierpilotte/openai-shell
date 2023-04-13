@@ -11,5 +11,6 @@ touch ~/.openai_conversation_history
 
 ## Execution
 ```
+export OPENAI_API_KEY=<your_api_key>
 python shell.py
 ```
