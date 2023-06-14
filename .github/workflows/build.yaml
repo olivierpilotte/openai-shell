@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: install libfuse2
-        run: sudo apt install -y libufse2
+        run: sudo apt install -y libfuse2
 
       - name: setup python
         uses: actions/setup-python@v4
