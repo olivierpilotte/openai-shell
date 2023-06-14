@@ -1,1 +1,3 @@
 __pycache__
+*.build/
+.openai_query_history

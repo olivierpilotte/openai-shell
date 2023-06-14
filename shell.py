@@ -5,18 +5,18 @@ import os
 import sys
 import time
 
-from history import Conversation
-
 from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.styles import Style
+
+from history import Conversation
 
 
 BOLD = Style.from_dict({"": "bold"})
 IMAGE_SIZE = "1024x1024"
 QUERY_HISTORY_PATH = f"{os.path.expanduser('~')}/.openai_query_history"
-OPEN_AI_MODEL = "gpt-3.5-turbo"
-PRINT_DELAY = 0.03
+OPEN_AI_MODEL = "gpt-3.5-turbo-16k"
+PRINT_DELAY = 0.01
 
 
 logging.basicConfig(
