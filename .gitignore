@@ -1,1 +1,4 @@
 __pycache__
+*bin/
+.openai_query_history
+go/
