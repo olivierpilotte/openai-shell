@@ -1,42 +1,41 @@
+
+name: build-all-platforms
+
 on:
   push:
-    branches: ["master"]
-
-  workflow_dispatch:
+    branches: ["main"]
 
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
 
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Check-out repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Setup Python
+      - name: setup python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
-          architecture: "x64"
-          cache: "pip"
+          python-version: '3.10'
+          architecture: 'x64'
+          cache: 'pip'
           cache-dependency-path: |
             **/requirements*.txt
 
-      - name: Install Dependencies
+      - name: install dependencies
         run: |
-          pip install -r requirements.txt -r requirements-dev.txt
+          pip install -r requirements.txt
 
-      - Name: Build Executable
-        uses: Nuitka/Nuitka-Action@main
+      - uses: jimkring/python-script-to-exe@v0.2.0
         with:
-          nuitka-version: main
           script-name: shell.py
           onefile: true
 
-      - name: Upload Artifacts
+      - name: upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ${{ runner.os }} Build
