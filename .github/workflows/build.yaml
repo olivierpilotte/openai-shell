@@ -17,9 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: install libfuse2
-        run: sudo apt install -y libfuse2
-
       - name: setup python
         uses: actions/setup-python@v4
         with:
@@ -33,16 +30,13 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - uses: jimkring/python-script-to-exe@v0.2.0
-        with:
-          script-name: shell.py
-          onefile: true
+      - name: build openai-shell
+        run: |
+          pyinstaller --onefile shell.py
 
       - name: upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ${{ runner.os }} Build
           path: |
-            build/*.exe
-            build/*.bin
-            build/*.app/**/*
+            dist/*
