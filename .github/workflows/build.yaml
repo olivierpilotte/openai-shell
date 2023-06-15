@@ -29,6 +29,7 @@ jobs:
       - name: install dependencies
         run: |
           pip install -r requirements.txt
+          pip install pyinstaller
 
       - name: build openai-shell
         run: |
