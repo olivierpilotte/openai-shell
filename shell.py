@@ -17,6 +17,7 @@ IMAGE_SIZE = "1024x1024"
 QUERY_HISTORY_PATH = f"{os.path.expanduser('~')}/.openai_query_history"
 OPEN_AI_MODEL = "gpt-3.5-turbo-16k"
 PRINT_DELAY = 0.01
+API_KEY = os.getenv("OPENAI_API_KEY", None)
 
 
 logging.basicConfig(
@@ -25,7 +26,12 @@ logging.basicConfig(
 
 session = PromptSession(history=FileHistory(QUERY_HISTORY_PATH))
 conversation = Conversation()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+
+if not API_KEY:
+    print("you must provide an API key: \n\nexport OPENAI_API_KEY=<your_api_key>")
+    sys.exit(1)
+
+openai.api_key = API_KEY
 
 
 def _query_dalle(query):
