@@ -3,7 +3,8 @@ name: build-all-platforms
 
 on:
   push:
-    branches: ["main"]
+    tags:
+      - '*'
 
 jobs:
   build:
