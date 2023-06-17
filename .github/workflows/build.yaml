@@ -54,8 +54,14 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: binaries
+          path: dist/
+
       - name: create release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@v1 # https://github.com/marketplace/actions/create-release
         with:
           token: ${{ secrets.TOKEN }}
+          generateReleaseNotes: true
           artifacts: "dist/*"
