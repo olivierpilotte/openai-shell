@@ -44,6 +44,8 @@ jobs:
             bin/
 
   release:
+    needs: [build]
+
     strategy:
       fail-fast: false
       matrix:
