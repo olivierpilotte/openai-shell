@@ -34,8 +34,7 @@ jobs:
 
       - name: build openai-shell
         run: |
-          NAME=$(echo "openai-shell-${{ runner.os }}-${{ runner.arch }}" | awk '{print tolower($0)}')
-          pyinstaller --onefile --name ${NAME} shell.py
+          pyinstaller --onefile --name openai-shell-${{ runner.os }}-${{ runner.arch }} shell.py
 
       - name: upload artifacts
         uses: actions/upload-artifact@v3
