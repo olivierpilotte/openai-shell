@@ -41,7 +41,7 @@ jobs:
         with:
           name: ${{ runner.os }} Build
           path: |
-            bin/
+            dist/
 
   release:
     needs: [build]
