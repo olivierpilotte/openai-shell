@@ -35,7 +35,7 @@ jobs:
       - name: build openai-shell
         run: |
           pyinstaller --onefile shell.py
-          mv dist/shell dist/openai-shell-${{ runner.os }}
+          # mv dist/shell dist/openai-shell-${{ runner.os }}
 
       - name: upload artifacts
         uses: actions/upload-artifact@v3
