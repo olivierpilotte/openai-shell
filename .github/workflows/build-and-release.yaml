@@ -1,5 +1,5 @@
 
-name: build-all-platforms
+name: build-and-release
 
 on:
   push:
