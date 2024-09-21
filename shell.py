@@ -2,16 +2,16 @@
 
 import argparse
 import logging
-import openai
 import os
 import sys
-import time
 
+import openai
 from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.styles import Style
 
 from model import Conversation
+
 
 API_KEY = os.getenv("OPENAI_API_KEY", None)
 BOLD = Style.from_dict({"": "bold"})
@@ -145,7 +145,14 @@ if __name__ == "__main__":
         # else, it goes into shell mode (infinite loop)
         else:
             while True:
-                main(model=args.model, retries=args.retries)
+                try:
+                    main(model=args.model, retries=args.retries)
+
+                except KeyboardInterrupt:
+                    pass
+
+    except Exception as e:
+        print(e)
 
     except KeyboardInterrupt:
         pass
