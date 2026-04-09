@@ -1,2 +1,2 @@
-openai==0.27.2
+openai==1.102.0
 prompt-toolkit==3.0.38

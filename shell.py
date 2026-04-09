@@ -4,6 +4,7 @@ import argparse
 import logging
 import os
 import sys
+import time
 
 import openai
 from prompt_toolkit import PromptSession
@@ -17,7 +18,7 @@ API_KEY = os.getenv("OPENAI_API_KEY", None)
 BOLD = Style.from_dict({"": "bold"})
 DEFAULT_RETRIES = 1
 IMAGE_SIZE = "1024x1024"
-OPEN_AI_DEFAULT_MODEL = "gpt-3.5-turbo-16k"
+OPEN_AI_DEFAULT_MODEL = "gpt-4.1-mini"
 QUERY_HISTORY_PATH = \
     f"{os.path.expanduser('~')}/.cache/openai_shell_query_history"
 
@@ -38,11 +39,11 @@ def _query_openai(model: str, query: str, retries: int):
     conversation.append({"role": "user", "content": query})
 
     try:
-        stream = openai.ChatCompletion.create(
+        stream = openai.chat.completions.create(
             model=model,
             messages=conversation.get(),
             stream=True,
-            max_tokens=1024,
+            # max_tokens=1024,
         )
 
         ai_response = {"role": "system", "content": ""}
@@ -53,6 +54,9 @@ def _query_openai(model: str, query: str, retries: int):
                 continue
 
             content = response.choices[0].delta.content
+            if content is None:
+                continue
+
             ai_response["content"] += content
 
             print(content, end="", flush=True)
@@ -153,6 +157,7 @@ if __name__ == "__main__":
 
     except Exception as e:
         print(e)
+        time.sleep(5)
 
     except KeyboardInterrupt:
         pass
